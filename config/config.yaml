@@ -11,7 +11,7 @@ data_ingestion :
 base_model :
   root_dir : artifacts/prep_base_model
   base_model_path : artifacts/prep_base_model/base_model.h5
-  updated_base_model_path : artifacts/prep_base_model_path/updated_base_model.h5
+  updated_base_model_path : artifacts/prep_base_model/updated_base_model.h5
 
 
 model_training :
@@ -19,7 +19,7 @@ model_training :
   trained_model_path : artifacts/model_training/training.h5
 
 
-model_evaluation :
-  root_dir  : artifacts/model_evaluation
-  model_evaluation_file_path : artifacts/model_evaluation/model_evaluation.yaml
+# model_evaluation :
+#   root_dir  : artifacts/model_evaluation
+#   model_evaluation_file_path : artifacts/model_evaluation/model_evaluation.yaml
 

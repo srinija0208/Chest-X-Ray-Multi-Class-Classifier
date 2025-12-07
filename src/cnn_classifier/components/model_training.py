@@ -1,14 +1,11 @@
 import os
+import math
 from pathlib import Path
 import urllib.request as request
 from zipfile import ZipFile
 import tensorflow as tf
-tf.config.run_functions_eagerly(True)
-import time
 
 from cnn_classifier.entity.config_entity import ModelTrainingConfig
-
-
 
 class Training:
     def __init__(self, config: ModelTrainingConfig):
@@ -17,10 +14,11 @@ class Training:
     
     def get_base_model(self):
         self.model = tf.keras.models.load_model(
-            self.config.updated_base_model_path
+            self.config.updated_base_model_path,
+            compile=False
         )
         self.model.compile(
-        optimizer=tf.keras.optimizers.SGD(
+        optimizer=tf.keras.optimizers.Adam(
             learning_rate=self.config.params_learning_rate
         ),
         loss=tf.keras.losses.CategoricalCrossentropy(),
@@ -77,11 +75,10 @@ class Training:
         model.save(path)
 
 
-
     
     def train(self):
-        self.steps_per_epoch = self.train_generator.samples // self.train_generator.batch_size
-        self.validation_steps = self.valid_generator.samples // self.valid_generator.batch_size
+        self.steps_per_epoch = math.ceil(self.train_generator.samples / self.train_generator.batch_size)
+        self.validation_steps = math.ceil(self.valid_generator.samples / self.valid_generator.batch_size)
 
         self.model.fit(
             self.train_generator,
@@ -95,3 +92,4 @@ class Training:
             path=self.config.trained_model_path,
             model=self.model
         )
+    

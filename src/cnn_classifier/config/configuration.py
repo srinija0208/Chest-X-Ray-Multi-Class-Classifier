@@ -1,7 +1,12 @@
 import os
 from cnn_classifier.constants import *
+
 from cnn_classifier.utils.utils import read_yaml, create_directories
-from cnn_classifier.entity.config_entity import DataIngestionConfig, BaseModelConfig, ModelTrainingConfig
+from cnn_classifier.config import configuration
+from cnn_classifier.entity.config_entity import (DataIngestionConfig, BaseModelConfig, ModelTrainingConfig, ModelEvaluationConfig)
+
+import dagshub
+dagshub.init(repo_owner='srinija0208', repo_name='Chest-X-Ray-Multi-Class-Classifier', mlflow=True)
 
 class ConfigurationManager:
 
@@ -77,3 +82,23 @@ class ConfigurationManager:
         )
 
         return training_config
+    
+
+    
+    ## model evaluation related config
+
+
+    def get_model_evaluation_config(self) -> ModelEvaluationConfig:
+        model_evaluation = ModelEvaluationConfig(
+            #model_path = "artifacts/model_training/training.h5",
+            #training_data = "artifacts/data_ingestion",
+            model_path = Path(self.config.model_training.trained_model_path),
+        
+            training_data = Path(self.config.data_ingestion.unzip_dir),
+            all_params = self.params,
+            params_image_size = self.params.IMAGE_SIZE,
+            params_batch_size = self.params.BATCH_SIZE,
+            params_epochs = self.params.EPOCHS,
+        )
+
+        return model_evaluation
