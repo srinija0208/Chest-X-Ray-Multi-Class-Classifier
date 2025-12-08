@@ -161,6 +161,9 @@ cython_debug/
 
 artifacts/*
 
+Chest-X-Ray-Multiclass-Classifier
+gradio_app.py
+
 cnn_env
 chest-x-ray-data.zip
 artifacts/*
