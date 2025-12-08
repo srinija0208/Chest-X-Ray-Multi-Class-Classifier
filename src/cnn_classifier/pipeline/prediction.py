@@ -10,10 +10,11 @@ class PredictionPipeline:
     def __init__(self,filename):
         self.filename =filename
 
-    # load model
     def predict(self):
-        model = load_model(os.path.join("model","model.h5"))
+        # load model
+        model = load_model(os.path.join("model","training.h5"))
 
+        # load image
         imagename = self.filename
         test_image = image.load_img(imagename, target_size = (224,224))
         test_image = image.img_to_array(test_image)
@@ -22,12 +23,12 @@ class PredictionPipeline:
         print(result)
 
         if result[0] == 0:
-            prediction = 'Normal'
+            prediction = 'Covid'
             return [{ "image" : prediction}]
         
         elif result[0] == 1:
-            prediction = 'Covid'
-            return [{"image" : "prediction"}]
+            prediction = 'Normal'
+            return [{"image" : prediction}]
         
         else:
             prediction = 'Pneumonia'

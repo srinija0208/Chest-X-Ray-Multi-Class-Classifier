@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chest X-Ray Classifier</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .upload-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .image-preview {
+            /* 🛠️ FIX 1: Reduced size for a smaller upload box */
+            width: 100%;
+            max-width: 300px; /* Reduced from 400px */
+            height: 300px;  /* Reduced from 400px */
+            margin: 0 auto 20px;
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            display: none;
+        }
+        .image-preview.has-image {
+            border-style: solid;
+        }
+        .placeholder {
+            text-align: center;
+            color: #6c757d;
+        }
+        .placeholder i {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        .btn-upload, .btn-predict {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .btn-upload {
+            background: #667eea;
+            color: white;
+        }
+        .btn-upload:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-predict {
+            background: #10b981;
+            color: white;
+        }
+        .btn-predict:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        .btn-predict:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .results-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            min-height: 300px;
+        }
+        .results-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .prediction-result {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .prediction-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+        .badge-covid {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .badge-normal {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .badge-pneumonia {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .info-text {
+            color: #6c757d;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }                        
+            .content {
+                padding: 20px;
+            }
+            .image-preview {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1>🏥 Chest X-Ray Classifier</h1>
+            <p>AI-Powered Medical Image Analysis</p>
+        </div>
+        <div class="content">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="upload-section">
+                        <h3 class="text-center mb-4">Upload X-Ray Image</h3>
+                                                <div class="image-preview" id="imagePreview">
+                            <div class="placeholder">
+                                <div style="font-size: 4rem; opacity: 0.5;">📁</div>
+                                <p>Click upload to select an image</p>
+                            </div>
+                            <img id="uploadedImage" alt="Uploaded X-Ray">
+                        </div>
+                        <button class="btn-upload" id="uploadBtn">
+                            📤 Upload Image
+                        </button>
+                        <button class="btn-predict" id="predictBtn" disabled>
+                            🔍 Analyze X-Ray
+                        </button>
+                                                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                        <input type="hidden" id="url" value="../predict">
+                                                <p class="info-text text-center mt-3">
+                            Supported formats: JPG, PNG, JPEG
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="results-section">
+                        <h3>📊 Analysis Results</h3>
+                                                <div id="resultsContainer">
+                            <p class="text-muted text-center" style="margin-top: 80px;">
+                                Upload an X-ray image and click "Analyze" to see results
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        let base64Image = "";
+        // Upload button click
+        $('#uploadBtn').click(function() {
+            $('#fileInput').click();
+        });
+        // File selection
+        $('#fileInput').change(function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                                
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = this.width;
+                        canvas.height = this.height;
+                        ctx.drawImage(this, 0, 0);
+                        base64Image = canvas.toDataURL('image/jpeg', 1.0).replace(/^data:image.+;base64,/, '');
+                    };
+                    img.src = e.target.result;
+                                        
+                    // Show preview
+                    $('#uploadedImage').attr('src', e.target.result).show();
+                    $('#imagePreview').addClass('has-image');
+                    $('#imagePreview .placeholder').hide();
+                    $('#predictBtn').prop('disabled', false);
+                };
+                                
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+        // Predict button click
+        $('#predictBtn').click(function() {
+            if (!base64Image) {
+                alert('Please upload an image first');
+                return;
+            }
+            const url = $('#url').val();
+            $('#loading').css('display', 'flex');
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ image: base64Image }),
+                success: function(response) {
+                    displayResults(response);
+                    $('#loading').hide();
+                },
+                error: function(xhr, status, error) {
+                    $('#loading').hide();
+                    alert('Error: ' + error + '\nPlease try again.');
+                }
+            });
+        });
+        function displayResults(response) {
+            const result = response[0];
+            const prediction = result.image;
+                        
+            let badgeClass = '';
+            let icon = '';
+                        
+            if (prediction === 'Covid') {
+                badgeClass = 'badge-covid';
+                icon = '🦠';
+            } else if (prediction === 'Normal') {
+                badgeClass = 'badge-normal';
+                icon = '✅';
+            } else if (prediction === 'Pneumonia') {
+                badgeClass = 'badge-pneumonia';
+                icon = '⚠️';
+            }
+            const html = `
+                <div class="prediction-result">
+                    <h5>Diagnosis:</h5>
+                    <div class="prediction-badge ${badgeClass}">
+                        ${icon} ${prediction}
+                    </div>
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            <strong>Note:</strong> This is an AI-based analysis and should not replace 
+                            professional medical diagnosis. Please consult a healthcare provider.
+                        </small>
+                    </div>
+                </div>
+            `;
+            $('#resultsContainer').html(html);
+        }
+    </script>
+</body>
+</html>
