@@ -81,9 +81,9 @@ This project is deployed on Hugging Face Spaces using Gradio.
 
 * To deploy your own Space:
 
-Create a new Space → choose Gradio
+- Create a new Space → choose Gradio
 
-* Upload:
+- Upload:
 
 - gradio_app.py
 
@@ -107,8 +107,9 @@ Create a new Space → choose Gradio
 
 - Applied data augmentation to reduce overfitting
 
--- Built an end-to-end ML pipeline with DVC
+- Built an end-to-end ML pipeline with DVC
 
--- Tracked hyperparameters + metrics using MLflow
+- Tracked hyperparameters + metrics using MLflow
 
--- Deployed a real-time inference app on Hugging Face with Gradio
+- Deployed a real-time inference app on Hugging Face with Gradio
+
