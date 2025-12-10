@@ -22,19 +22,33 @@ This project is an end-to-end deep learning pipeline that classifies chest X-ray
 - Returns class label 
 
 # 📂 Project Structure
+
 Chest-X-Ray-Multiclass-Classifier/
+
 │── artifacts/                 # DVC-tracked data & models
+
 │── src/cnn_classifier/
+
 │     ├── components/          # Training, evaluation modules
+
 │     ├── pipeline/            # Training & prediction pipelines
+
 │     ├── utils/               # Helper utilities
+
 │── app.py                     # Flask/Gradio app (optional)
+
 │── gradio_app.py              # App used for deployment
+
 │── model/                     # Saved trained model
+
 │── params.yaml                # Hyperparameters
+
 │── config.yaml                # Configuration file
+
 │── scores.json                # Evaluation metrics
+
 │── requirements.txt
+
 │── README.md
 
 # 🧠 Model Performance
@@ -63,13 +77,17 @@ Metric	Validation	Evaluation (Test Split)
 # ▶️ How to Run Locally
 
 1️⃣ Clone the repository
+
 git clone https://github.com/<your-username>/Chest-X-Ray-Multiclass-Classifier.git
+
 cd Chest-X-Ray-Multiclass-Classifier
 
 2️⃣ Install dependencies
+
 pip install -r requirements.txt
 
 3️⃣ Train the model
+
 python main.py
 
 4️⃣ Launch the Gradio app
@@ -81,19 +99,19 @@ This project is deployed on Hugging Face Spaces using Gradio.
 
 * To deploy your own Space:
 
-- Create a new Space → choose Gradio
+-- Create a new Space → choose Gradio
 
-- Upload:
+-- Upload:
 
-- gradio_app.py
+-- gradio_app.py
 
-- requirements.txt
+-- requirements.txt
 
-- model/ folder
+-- model/ folder
 
-- README.md
+-- README.md
 
-- Commit and the app will auto-build.
+-- Commit and the app will auto-build.
 
 # 📸 App Screenshot
 
@@ -112,4 +130,5 @@ This project is deployed on Hugging Face Spaces using Gradio.
 - Tracked hyperparameters + metrics using MLflow
 
 - Deployed a real-time inference app on Hugging Face with Gradio
+
 
