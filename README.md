@@ -77,21 +77,30 @@ Metric	Validation	Evaluation (Test Split)
 # ▶️ How to Run Locally
 
 1️⃣ Clone the repository
-
+```
 git clone https://github.com/<your-username>/Chest-X-Ray-Multiclass-Classifier.git
+```
 
+```
 cd Chest-X-Ray-Multiclass-Classifier
+```
 
 2️⃣ Install dependencies
 
+```
 pip install -r requirements.txt
+```
 
 3️⃣ Train the model
 
+```
 python main.py
+```
 
 4️⃣ Launch the Gradio app
+```
 python gradio_app.py
+```
 
 # 🌐 Deployment (Hugging Face Spaces)
 
@@ -113,11 +122,7 @@ This project is deployed on Hugging Face Spaces using Gradio.
 
 -- Commit and the app will auto-build.
 
-# 📸 App Screenshot
 
-
-
-![App Screenshot](assets/app_screenshot.png)
 
 # 📝 Project Highlights
 
@@ -132,3 +137,11 @@ This project is deployed on Hugging Face Spaces using Gradio.
 - Deployed a real-time inference app on Hugging Face with Gradio
 
 
+# 📸 App Screenshot
+![Chest X-Ray CLassifier](assets/demo1.png)
+![Chest X-Ray CLassifier](assets/demo2.png)
+
+
+# 🚀 Demo
+
+Try the live app here: [Chest X-Ray Multiclass Classifier](https://huggingface.co/spaces/srinija1176/Chest-X-Ray-Multiclass-Classifier)
